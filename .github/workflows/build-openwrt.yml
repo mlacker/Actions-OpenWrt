@@ -134,6 +134,7 @@ jobs:
       if: env.UPLOAD_RELEASE == 'true' && steps.organize.outputs.status == 'success' && !cancelled()
       with:
         name: R${{ env.FILE_DATE }} for ${{ env.PRODUCT_NAME }}
+        tag: R${{ env.FILE_DATE }}
         allowUpdates: true
         token: ${{ secrets.GITHUB_TOKEN }}
         body: |
