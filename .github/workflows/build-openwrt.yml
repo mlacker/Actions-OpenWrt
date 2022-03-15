@@ -27,7 +27,7 @@ env:
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
   UPLOAD_BIN_DIR: false
-  UPLOAD_FIRMWARE: true
+  UPLOAD_FIRMWARE: false
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
   PRODUCT_NAME: ARMv8_ROOTFS
@@ -90,20 +90,6 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
 
-    - name: Upload package to release
-      uses: ncipollo/release-action@v1
-      with:
-        name: packages
-        tag: packages
-        allowUpdates: true
-        token: ${{ secrets.GITHUB_TOKEN }}
-        body: |
-          This is OpenWrt firmware for Armvirt 64
-          - Default IP: 192.168.10.250
-          - Default username: root
-          - Default password: password
-        artifacts: openwrt/dl/*
-
     - name: Compile the firmware
       id: compile
       run: |
@@ -148,7 +134,6 @@ jobs:
       if: env.UPLOAD_RELEASE == 'true' && steps.organize.outputs.status == 'success' && !cancelled()
       with:
         name: R${{ env.FILE_DATE }} for ${{ env.PRODUCT_NAME }}
-        tag: R${{ env.PRODUCT_NAME }}
         allowUpdates: true
         token: ${{ secrets.GITHUB_TOKEN }}
         body: |
