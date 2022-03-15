@@ -102,7 +102,7 @@ jobs:
           - Default IP: 192.168.10.250
           - Default username: root
           - Default password: password
-        artifacts: openwrt/dl
+        artifacts: openwrt/dl/*
 
     - name: Compile the firmware
       id: compile
