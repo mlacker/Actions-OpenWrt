@@ -27,7 +27,7 @@ env:
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
   UPLOAD_BIN_DIR: false
-  UPLOAD_FIRMWARE: true
+  UPLOAD_FIRMWARE: false
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
   PRODUCT_NAME: ARMv8_ROOTFS
@@ -127,22 +127,33 @@ jobs:
       with:
         name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
+    
+    - name: Package Armvirt as OpenWrt
+      uses: ophub/flippy-openwrt-actions@main
+      env:
+        OPENWRT_ARMVIRT: openwrt/bin/targets/*/*/*rootfs.tar.gz
+        PACKAGE_SOC: s905d
+        KERNEL_VERSION_NAME: 5.4.184
+        WHOAMI: mlacker
+        ENABLE_WIFI_K504: 0
+        ENABLE_WIFI_K510: 0
 
     - name: Upload OpenWrt Firmware to Release
       id: release
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.organize.outputs.status == 'success' && !cancelled()
       with:
-        name: R${{ env.FILE_DATE }} for ${{ env.PRODUCT_NAME }}
-        tag: R${{ env.FILE_DATE }}
+        name: openwrt_armvirt_v8_${{ env.PACKAGED_OUTPUTDATE }}
+        tag: R${{ env.PACKAGED_OUTPUTDATE }}
+        artifacts: ${{ env.PACKAGED_OUTPUTPATH }}/*
         allowUpdates: true
         token: ${{ secrets.GITHUB_TOKEN }}
         body: |
           This is OpenWrt firmware for Armvirt 64
-          - Default IP: 192.168.10.250
-          - Default username: root
-          - Default password: password
-        artifacts: ${{ env.FIRMWARE }}/*
+          * Firmware information
+          Default IP: 192.168.10.250
+          Default username: root
+          Default password: password
 
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
