@@ -1,20 +1,15 @@
 #!/bin/bash
-#
-# Copyright (c) 2019-2020 P3TERX <https://p3terx.com>
-#
-# This is free software, licensed under the MIT License.
-# See /LICENSE for more information.
-#
-# https://github.com/P3TERX/Actions-OpenWrt
+#========================================================================================================================
+# https://github.com/ophub/amlogic-s9xxx-openwrt
 # File name: diy-part2.sh
-# Description: OpenWrt DIY script part 2 (After Update feeds)
-#
+# Description: Diy script (After Update feeds, Modify the default IP, hostname, theme, add/remove software packages, etc.)
+# Source code repository: https://github.com/coolsnowwolf/lede / Branch: master
+#========================================================================================================================
 
 # Modify default IP
 sed -i 's/192.168.1.1/192.168.10.250/g' package/base-files/files/bin/config_generate
 
 # 移除不用软件包
-rm -rf package/lean/luci-theme-argon
 rm -rf package/helloworld
 
 # 添加额外软件包
@@ -35,4 +30,10 @@ git clone --depth=1 https://github.com/jerrykuku/luci-app-vssr.git package/luci-
 # svn co https://github.com/fw876/helloworld/trunk/luci-app-ssr-plus package/helloworld/luci-app-ssr-plus
 # svn co https://github.com/ophub/luci-app-amlogic/trunk/luci-app-amlogic package/luci-app-amlogic
 
-git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon
+# luci-theme-argon
+rm -rf package/lean/luci-theme-argon
+git clone --depth=1 -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon
+
+# luci-theme-neobird
+rm -rf package/lean/luci-theme-neobird  
+git clone --depth=1 https://github.com/thinktip/luci-theme-neobird.git package/luci-theme-neobird
